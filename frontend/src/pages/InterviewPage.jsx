@@ -151,15 +151,38 @@ const InterviewPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-6 border border-purple-100 shadow-xl">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">🎥 Recording in Progress</h3>
-                  <InterviewRecorder token={localStorage.getItem('token')} simulationId={simulation?.id} />
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">🎥 Live Interview</h3>
+                  <InterviewRecorder 
+                    token={localStorage.getItem('token')} 
+                    simulationId={simulation?.id} 
+                    simulation={simulation}
+                  />
                 </div>
               </div>
 
               <div className="lg:col-span-1">
                 <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-6 border border-purple-100 shadow-xl sticky top-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">📝 Interview Questions</h3>
-                  {simulation?.questions && simulation.questions.length > 0 ? (
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">📝 Interview Scenario</h3>
+                  {simulation?.prompt ? (
+                    <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                      <div className="bg-gradient-to-r from-purple-50 to-teal-50 rounded-lg p-4 border border-purple-200">
+                        <p className="text-xs text-purple-600 font-semibold mb-2">{simulation.type?.toUpperCase()} ASSESSMENT</p>
+                        <h4 className="text-sm font-bold text-gray-800 mb-3">{simulation.title}</h4>
+                        <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                          {simulation.prompt}
+                        </div>
+                      </div>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-xs text-blue-600 font-semibold mb-2">💡 INSTRUCTIONS</p>
+                        <ul className="text-sm text-gray-700 space-y-1">
+                          <li>• Read the scenario carefully</li>
+                          <li>• Think out loud as you solve</li>
+                          <li>• Explain your reasoning</li>
+                          <li>• Take your time</li>
+                        </ul>
+                      </div>
+                    </div>
+                  ) : simulation?.questions && simulation.questions.length > 0 ? (
                     <div className="space-y-4 max-h-[600px] overflow-y-auto">
                       {simulation.questions.map((q, index) => (
                         <div key={index} className="bg-gradient-to-r from-purple-50 to-teal-50 rounded-lg p-4 border border-purple-200">

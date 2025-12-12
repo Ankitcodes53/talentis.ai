@@ -36,11 +36,18 @@ async def start_interview(
     return {"attempt_id": attempt.id}
 
 @router.post("/upload-chunk/{attempt_id}")
-async def upload_chunk(attempt_id: int, kind: str = Form(...), chunk: UploadFile = File(...),
-                       db=Depends(get_db), user=Depends(get_current_user)):
+async def upload_chunk(
+    attempt_id: int,
+    kind: str = Form(...),
+    chunk: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """
     kind: "video", "screen", or "editor_events" (editor_events: small JSON)
     """
+    user = await get_current_user(credentials, db)
+    
     attempt = db.query(SimulationAttempt).filter(SimulationAttempt.id == attempt_id).first()
     if not attempt:
         raise HTTPException(status_code=404, detail="Attempt not found")
@@ -70,7 +77,14 @@ async def upload_chunk(attempt_id: int, kind: str = Form(...), chunk: UploadFile
     return {"status": "ok", "path": path}
 
 @router.post("/finish/{attempt_id}", status_code=status.HTTP_202_ACCEPTED)
-def finish_attempt(attempt_id: int, background_tasks: BackgroundTasks, db=Depends(get_db), user=Depends(get_current_user)):
+async def finish_attempt(
+    attempt_id: int,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    user = await get_current_user(credentials, db)
+    
     attempt = db.query(SimulationAttempt).filter(SimulationAttempt.id == attempt_id).first()
     if not attempt:
         raise HTTPException(status_code=404, detail="Attempt not found")
