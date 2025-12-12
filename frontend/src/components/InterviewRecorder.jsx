@@ -73,25 +73,38 @@ export default function InterviewRecorder({ token, simulationId }) {
         alert("Cannot start interview: No simulation available");
         return;
       }
+
+      // Step 1: Request camera and microphone permissions with popup
+      const permissionGranted = window.confirm(
+        "This interview requires access to your camera and microphone for video recording.\n\n" +
+        "Click OK to grant permissions and start the interview."
+      );
       
-      // Start interview attempt with proper FormData
-      const formData = new FormData();
-      formData.append('simulation_id', simulationId);
-      
+      if (!permissionGranted) {
+        alert("Camera and microphone access is required to start the interview.");
+        return;
+      }
+
+      // Step 2: Request actual media permissions
+      let camStream;
+      try {
+        camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      } catch (err) {
+        alert("Failed to access camera/microphone. Please check your browser permissions and try again.");
+        console.error("Media permission error:", err);
+        return;
+      }
+
+      // Step 3: Start interview attempt - use regular JSON body instead of FormData
       console.log('Starting interview with simulation_id:', simulationId);
       
-      // Delete Content-Type header so axios can set multipart/form-data with boundary
-      const r = await api.post("/api/video-interviews/start", formData, {
-        headers: {
-          'Content-Type': undefined  // Let axios set multipart/form-data automatically
-        },
-        transformRequest: [(data) => data]  // Prevent axios from transforming FormData
+      const r = await api.post("/api/video-interviews/start", {
+        simulation_id: simulationId
       });
       const id = r.data.attempt_id;
       setAttemptId(id);
 
-      // Camera stream
-      const camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      // Step 4: Setup camera stream
       videoRef.current.srcObject = camStream;
       await videoRef.current.play();
 

@@ -1,22 +1,35 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, BackgroundTasks, Body
 from fastapi import status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Simulation, SimulationAttempt, User
 from auth import get_current_user
 import os, uuid, aiofiles, json
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/video-interviews", tags=["video-interviews"])
 UPLOAD_TMP = os.getenv("UPLOAD_DIR", "/tmp/talentis_media")
+security = HTTPBearer()
+
+class StartInterviewRequest(BaseModel):
+    simulation_id: int
 
 @router.post("/start")
-def start_interview(simulation_id: int = Form(...), db=Depends(get_db), user=Depends(get_current_user)):
-    sim = db.query(Simulation).filter(Simulation.id == simulation_id).first()
+async def start_interview(
+    request: StartInterviewRequest,
+    db: Session = Depends(get_db),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    # Get current user
+    user = await get_current_user(credentials, db)
+    
+    sim = db.query(Simulation).filter(Simulation.id == request.simulation_id).first()
     if not sim:
         raise HTTPException(status_code=404, detail="Simulation not found")
     if user.role.value != "candidate":
         raise HTTPException(status_code=403, detail="Only candidates can start interview")
-    attempt = SimulationAttempt(simulation_id=simulation_id, candidate_id=user.id, responses={})
+    attempt = SimulationAttempt(simulation_id=request.simulation_id, candidate_id=user.id, responses={})
     db.add(attempt)
     db.commit()
     db.refresh(attempt)
