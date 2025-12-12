@@ -1,0 +1,42 @@
+JOHN SMITH
+Senior Python Developer
+Email: john.smith@email.com | Phone: (555) 123-4567
+Location: San Francisco, CA
+
+SUMMARY
+Experienced Python developer with 6 years of professional experience in building scalable web applications,
+machine learning systems, and RESTful APIs. Expert in FastAPI, Django, PostgreSQL, and cloud technologies.
+
+TECHNICAL SKILLS
+- Programming Languages: Python, JavaScript, SQL
+- Web Frameworks: FastAPI, Django, Flask
+- Databases: PostgreSQL, MongoDB, Redis
+- Machine Learning: TensorFlow, PyTorch, Scikit-learn
+- Cloud: AWS, Docker, Kubernetes
+- Tools: Git, CI/CD, Agile methodologies
+
+PROFESSIONAL EXPERIENCE
+
+Senior Python Developer | Tech Solutions Inc. | 2021 - Present
+- Developed high-performance RESTful APIs using FastAPI serving 1M+ requests/day
+- Built machine learning models for predictive analytics achieving 92% accuracy
+- Optimized PostgreSQL queries reducing response time by 60%
+- Led team of 4 developers in agile environment
+
+Python Developer | DataCorp | 2019 - 2021
+- Created data pipelines processing 100GB+ daily using Python and Airflow
+- Implemented real-time analytics dashboard using Django and React
+- Collaborated with data scientists to deploy ML models to production
+
+EDUCATION
+Bachelor of Science in Computer Science
+Stanford University | 2015 - 2019
+GPA: 3.8/4.0
+
+CERTIFICATIONS
+- AWS Certified Solutions Architect
+- Python Professional Certification
+
+LANGUAGES
+- English (Native)
+- Spanish (Fluent)
